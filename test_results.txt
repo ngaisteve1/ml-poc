@@ -1,0 +1,366 @@
+test_actual_value_update (__main__.TestPhase3PredictionInsertion)
+
+1.6: Testing actual value updates...
+Test 1.2: Verify actual values can be updated after initial prediction ... ERROR
+test_predictions_flow_from_database (__main__.TestPhase3PredictionInsertion)
+
+======================================================================
+TEST 1: PREDICTION INSERTION FROM SOURCE TO DATABASE
+======================================================================
+
+1.1: Inserting 30 predictions...
+Test 1.1: Verify predictions can be inserted and retrieved from database ... ERROR
+test_drift_detection_edge_cases (__main__.TestPhase3DriftDetection)
+
+2.6: Testing edge cases...
+Test 2.5: Edge cases for drift detection ... ERROR
+test_drift_detection_normal_data (__main__.TestPhase3DriftDetection)
+
+======================================================================
+TEST 2: DRIFT DETECTION ON REAL PRODUCTION DATA
+======================================================================
+
+2.1: Testing drift detection on normal data...
+Test 2.1: Verify drift detector works with normal data (no drift) ... ERROR
+test_drift_detection_with_anomalies (__main__.TestPhase3DriftDetection)
+
+2.3: Testing drift detection with anomalies...
+Test 2.2: Verify drift detector detects real anomalies ... ERROR
+test_drift_detection_with_distribution_shift (__main__.TestPhase3DriftDetection)
+
+2.4: Testing drift detection with distribution shift...
+Test 2.3: Verify drift detector detects distribution shifts ... ERROR
+test_drift_detection_with_trend (__main__.TestPhase3DriftDetection)
+
+2.5: Testing drift detection with trend...
+Test 2.4: Verify drift detector detects trend changes ... ERROR
+test_alert_creation_from_anomaly (__main__.TestPhase3AlertCreation)
+
+======================================================================
+TEST 3: ALERT CREATION FROM DRIFT DETECTION
+======================================================================
+
+3.1: Testing alert creation from anomalies...
+Test 3.1: Verify alerts are created from anomaly detection ... ERROR
+test_alert_creation_from_distribution_drift (__main__.TestPhase3AlertCreation)
+
+3.2: Testing alert from distribution drift...
+Test 3.2: Verify alerts are created from distribution drift ... ERROR
+test_alert_creation_multi_signal (__main__.TestPhase3AlertCreation)
+
+3.3: Testing multi-signal alert (critical)...
+Test 3.3: Verify multi-signal alerts (most critical) ... ERROR
+test_alert_no_drift (__main__.TestPhase3AlertCreation)
+
+3.4: Testing no alert when no drift...
+Test 3.4: Verify no alert created when no drift ... ERROR
+test_alert_persistence (__main__.TestPhase3AlertCreation)
+
+3.5: Testing alert persistence to database...
+Test 3.5: Verify alerts persist to database ... ERROR
+test_alert_summary (__main__.TestPhase3AlertCreation)
+
+3.6: Testing alert summary statistics...
+Test 3.6: Verify alert summary statistics ... ERROR
+test_performance_with_30_predictions (__main__.TestPhase3Performance)
+
+======================================================================
+TEST 5: PERFORMANCE VALIDATION WITH 30+ PREDICTIONS
+======================================================================
+
+5.1: Inserted 30 predictions for performance testing
+
+5.2: Measuring drift detection performance...
+Test 5.1: Validate performance with 30+ predictions ... ERROR
+test_edge_case_constant_values (__main__.TestPhase3EdgeCases)
+
+6.3: Testing constant values...
+Test 6.3: All constant values (no variation) ... ERROR
+test_edge_case_empty_database (__main__.TestPhase3EdgeCases)
+
+======================================================================
+TEST 6: EDGE CASE HANDLING
+======================================================================
+
+6.1: Testing empty database...
+Test 6.1: Empty database graceful handling ... ERROR
+test_edge_case_extreme_values (__main__.TestPhase3EdgeCases)
+
+6.4: Testing extreme values...
+Test 6.4: Extreme but realistic values ... ERROR
+test_edge_case_null_actual_values (__main__.TestPhase3EdgeCases)
+
+6.5: Testing NULL actual values...
+Test 6.5: NULL actual values (predictions not yet actualized) ... ERROR
+test_edge_case_single_prediction (__main__.TestPhase3EdgeCases)
+
+6.2: Testing single prediction...
+Test 6.2: Single prediction edge case ... ERROR
+
+======================================================================
+ERROR: test_actual_value_update (__main__.TestPhase3PredictionInsertion)
+Test 1.2: Verify actual values can be updated after initial prediction
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 221, in test_actual_value_update
+    self._print_test_result("1.6: Actual value updates", True, "Can insert NULL and update later")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_predictions_flow_from_database (__main__.TestPhase3PredictionInsertion)
+Test 1.1: Verify predictions can be inserted and retrieved from database
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 124, in test_predictions_flow_from_database
+    self._print_test_result("1.1: Batch insertion", True, f"Inserted {len(prediction_ids)} predictions")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_drift_detection_edge_cases (__main__.TestPhase3DriftDetection)
+Test 2.5: Edge cases for drift detection
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 380, in test_drift_detection_edge_cases
+    self._print_test_result("2.6a: Empty data", True, "No crash, no false positive")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_drift_detection_normal_data (__main__.TestPhase3DriftDetection)
+Test 2.1: Verify drift detector works with normal data (no drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 256, in test_drift_detection_normal_data
+    self._print_test_result("2.1: Drift detection structure", True, "All 3 methods present")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_drift_detection_with_anomalies (__main__.TestPhase3DriftDetection)
+Test 2.2: Verify drift detector detects real anomalies
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 313, in test_drift_detection_with_anomalies
+    self._print_test_result("2.3: Anomaly detection", True,
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_drift_detection_with_distribution_shift (__main__.TestPhase3DriftDetection)
+Test 2.3: Verify drift detector detects distribution shifts
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 340, in test_drift_detection_with_distribution_shift
+    self._print_test_result("2.4: Distribution shift detection", True,
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_drift_detection_with_trend (__main__.TestPhase3DriftDetection)
+Test 2.4: Verify drift detector detects trend changes
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 362, in test_drift_detection_with_trend
+    self._print_test_result("2.5: Trend detection", True,
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_alert_creation_from_anomaly (__main__.TestPhase3AlertCreation)
+Test 3.1: Verify alerts are created from anomaly detection
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 441, in test_alert_creation_from_anomaly
+    self._print_test_result("3.1: Anomaly alert creation", True,
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_alert_creation_from_distribution_drift (__main__.TestPhase3AlertCreation)
+Test 3.2: Verify alerts are created from distribution drift
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 477, in test_alert_creation_from_distribution_drift
+    self._print_test_result("3.2: Distribution drift alert", True,
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_alert_creation_multi_signal (__main__.TestPhase3AlertCreation)
+Test 3.3: Verify multi-signal alerts (most critical)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 516, in test_alert_creation_multi_signal
+    self._print_test_result("3.3: Multi-signal alert", True, "Critical severity assigned")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_alert_no_drift (__main__.TestPhase3AlertCreation)
+Test 3.4: Verify no alert created when no drift
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 547, in test_alert_no_drift
+    self._print_test_result("3.4: No alert on normal data", True, "Correct behavior")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_alert_persistence (__main__.TestPhase3AlertCreation)
+Test 3.5: Verify alerts persist to database
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 590, in test_alert_persistence
+    self._print_test_result("3.5: Alert persistence", True, f"Saved and retrieved alert ID {alert_id}")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_alert_summary (__main__.TestPhase3AlertCreation)
+Test 3.6: Verify alert summary statistics
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 629, in test_alert_summary
+    self._print_test_result("3.6: Alert summary", True,
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_performance_with_30_predictions (__main__.TestPhase3Performance)
+Test 5.1: Validate performance with 30+ predictions
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 671, in test_performance_with_30_predictions
+    self._print_test_result("5.2: Drift detection performance", True,
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_edge_case_constant_values (__main__.TestPhase3EdgeCases)
+Test 6.3: All constant values (no variation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 807, in test_edge_case_constant_values
+    self._print_test_result("6.3: Constant values", True, "No false positives")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_edge_case_empty_database (__main__.TestPhase3EdgeCases)
+Test 6.1: Empty database graceful handling
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 758, in test_edge_case_empty_database
+    self._print_test_result("6.1: Empty database", True, "No crash, appropriate results")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_edge_case_extreme_values (__main__.TestPhase3EdgeCases)
+Test 6.4: Extreme but realistic values
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 828, in test_edge_case_extreme_values
+    self._print_test_result("6.4: Extreme values", True, "Handled without overflow")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_edge_case_null_actual_values (__main__.TestPhase3EdgeCases)
+Test 6.5: NULL actual values (predictions not yet actualized)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 858, in test_edge_case_null_actual_values
+    self._print_test_result("6.5: NULL actual values", True, "Preserved and handled correctly")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+======================================================================
+ERROR: test_edge_case_single_prediction (__main__.TestPhase3EdgeCases)
+Test 6.2: Single prediction edge case
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 784, in test_edge_case_single_prediction
+    self._print_test_result("6.2: Single prediction", True, "Handled gracefully")
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 92, in _print_test_result
+    print(f"\n{status} | {test_name}")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+
+----------------------------------------------------------------------
+Ran 19 tests in 1.800s
+
+FAILED (errors=19)
+
+======================================================================
+PHASE 3 INTEGRATION TEST SUMMARY
+======================================================================
+Tests run: 19
+Successes: 0
+Failures: 0
+Errors: 19
+Traceback (most recent call last):
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 905, in <module>
+    success = run_phase3_tests()
+  File "C:\dotnet\Navoo\Navoo.SmartArchive.Github\ml-poc\tests\test_phase3_integration.py", line 896, in run_phase3_tests
+    print("\n\u274c SOME TESTS FAILED")
+  File "C:\Program Files\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 2: character maps to <undefined>

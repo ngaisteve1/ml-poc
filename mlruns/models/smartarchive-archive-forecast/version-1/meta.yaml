@@ -1,0 +1,15 @@
+creation_timestamp: 1762967168900
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1762967168900
+model_id: m-336e181de296441b96fb070bbbed2c4e
+name: smartarchive-archive-forecast
+run_id: 5f6b5ad7ca7f442880170bd515d29f84
+run_link: null
+source: models:/m-336e181de296441b96fb070bbbed2c4e
+status: READY
+status_message: null
+storage_location: file:///C:/dotnet/Navoo/Navoo.SmartArchive.Github/ml-poc/mlruns/451645072276047856/models/m-336e181de296441b96fb070bbbed2c4e/artifacts
+user_id: null
+version: 1

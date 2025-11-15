@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/dotnet/Navoo/Navoo.SmartArchive.Github/ml-poc/mlruns/451645072276047856/5f6b5ad7ca7f442880170bd515d29f84/artifacts
+end_time: 1762967168960
+entry_point_name: ''
+experiment_id: '451645072276047856'
+lifecycle_stage: active
+run_id: 5f6b5ad7ca7f442880170bd515d29f84
+run_name: smartarchive-archive-forecast
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762967161829
+status: 3
+tags: []
+user_id: NGAI003

@@ -1,0 +1,10 @@
+artifact_location: file:///C:/dotnet/Navoo/Navoo.SmartArchive.Github/ml-poc/mlruns/451645072276047856/models/m-336e181de296441b96fb070bbbed2c4e/artifacts
+creation_timestamp: 1762967161921
+experiment_id: '451645072276047856'
+last_updated_timestamp: 1762967168851
+model_id: m-336e181de296441b96fb070bbbed2c4e
+model_type: null
+name: model
+source_run_id: 5f6b5ad7ca7f442880170bd515d29f84
+status: 2
+status_message: null
