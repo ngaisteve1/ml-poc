@@ -19,3 +19,6 @@ pytz>=2024.1
 applicationinsights>=0.11.0
 streamlit>=1.28.0
 plotly>=5.17.0
+
+# Scheduler for background jobs
+apscheduler==3.10.4

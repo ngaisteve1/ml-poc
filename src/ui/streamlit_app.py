@@ -50,7 +50,7 @@ st.markdown("""
 # Import mock data
 from mock_data import get_mock_historical_data, get_mock_prediction, get_mock_metrics
 
-# Import monitoring dashboard
+# Import monitoring modules
 try:
     from monitoring_dashboard import create_monitoring_dashboard
     MONITORING_AVAILABLE = True
@@ -58,6 +58,20 @@ except ImportError as e:
     MONITORING_AVAILABLE = False
     import warnings
     warnings.warn(f"Monitoring dashboard not available: {e}")
+
+# Import feedback and retraining modules
+try:
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    from monitoring.feedback_db import FeedbackDB
+    from monitoring.retraining_trigger import RetainingTriggerManager
+    from ml.retraining_scheduler import start_scheduler, stop_scheduler, get_scheduler
+    FEEDBACK_AVAILABLE = True
+except ImportError as e:
+    FEEDBACK_AVAILABLE = False
+    import warnings
+    warnings.warn(f"Feedback modules not available: {e}")
 
 # Import Azure ML endpoint client
 try:
@@ -386,6 +400,236 @@ def create_model_performance_section(metrics):
         st.dataframe(info_df, use_container_width=True, hide_index=True)
 
 
+def create_feedback_section():
+    """Create feedback collection interface"""
+    st.subheader("📝 Model Feedback")
+    st.markdown("*Help us improve the model by providing feedback on predictions*")
+    
+    if not FEEDBACK_AVAILABLE:
+        st.warning("⚠️ Feedback module not available")
+        return
+    
+    try:
+        # Initialize feedback database
+        feedback_db = FeedbackDB('monitoring.db')
+        
+        # Create two columns
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            # Show recent predictions
+            st.markdown("**Recent Predictions**")
+            recent_preds = feedback_db.get_recent_feedback(days=30, limit=10)
+            
+            if not recent_preds.empty:
+                # Display table
+                display_cols = ['prediction_date', 'predicted_value', 'actual_value', 'feedback_status']
+                display_df = recent_preds[display_cols].copy()
+                display_df['prediction_date'] = pd.to_datetime(display_df['prediction_date']).dt.strftime('%Y-%m-%d')
+                display_df = display_df.rename(columns={
+                    'prediction_date': 'Date',
+                    'predicted_value': 'Predicted',
+                    'actual_value': 'Actual',
+                    'feedback_status': 'Status'
+                })
+                st.dataframe(display_df, use_container_width=True, hide_index=True)
+            else:
+                st.info("No feedback records yet. Submit your first feedback below!")
+        
+        with col2:
+            # Feedback stats
+            st.markdown("**Feedback Stats**")
+            accuracy = feedback_db.get_feedback_accuracy(days=30)
+            
+            st.metric("Total Feedback", accuracy['total_feedback'])
+            col_a, col_b = st.columns(2)
+            with col_a:
+                st.metric("Correct", accuracy['correct_feedback'])
+            with col_b:
+                st.metric("Incorrect", accuracy['incorrect_feedback'])
+        
+        st.divider()
+        
+        # Feedback submission form
+        st.markdown("**Submit New Feedback**")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            pred_date = st.date_input(
+                "Prediction Date",
+                value=datetime.now().date(),
+                key="feedback_pred_date"
+            )
+        
+        with col2:
+            predicted_val = st.number_input(
+                "Predicted Value (GB)",
+                value=0.0,
+                step=0.1,
+                key="feedback_pred_val"
+            )
+        
+        with col3:
+            actual_val = st.number_input(
+                "Actual Value (GB)",
+                value=0.0,
+                step=0.1,
+                key="feedback_actual_val"
+            )
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            feedback_status = st.radio(
+                "Was this prediction correct?",
+                ["✅ Correct", "❌ Incorrect", "🤷 Uncertain"],
+                key="feedback_status"
+            )
+            # Extract status value
+            status_map = {"✅ Correct": "correct", "❌ Incorrect": "incorrect", "🤷 Uncertain": "uncertain"}
+            status = status_map[feedback_status]
+        
+        with col2:
+            user_comment = st.text_input(
+                "Additional Comments (optional)",
+                key="feedback_comment"
+            )
+        
+        if st.button("📤 Submit Feedback", key="submit_feedback_btn", use_container_width=True):
+            try:
+                feedback_db.submit_feedback(
+                    prediction_id=None,  # Will be linked to actual prediction if available
+                    prediction_date=pred_date.strftime('%Y-%m-%d'),
+                    predicted_value=predicted_val,
+                    actual_value=actual_val,
+                    feedback_status=status,
+                    user_feedback=user_comment
+                )
+                st.success("✅ Feedback submitted successfully! Thank you for helping us improve.")
+                st.balloons()
+            except Exception as e:
+                st.error(f"❌ Error submitting feedback: {e}")
+        
+        feedback_db.close()
+    
+    except Exception as e:
+        st.error(f"⚠️ Error in feedback section: {e}")
+
+
+def create_retraining_status_section():
+    """Display retraining status and conditions"""
+    st.subheader("🔄 Retraining Status")
+    
+    if not FEEDBACK_AVAILABLE:
+        st.warning("⚠️ Retraining module not available")
+        return
+    
+    try:
+        # Initialize databases
+        feedback_db = FeedbackDB('monitoring.db')
+        
+        # Import locally to avoid startup issues
+        from monitoring.predictions_db import PredictionsDB
+        from monitoring.drift_detector import DriftDetector
+        
+        predictions_db = PredictionsDB('monitoring.db')
+        drift_detector = DriftDetector()
+        
+        # Create trigger manager
+        trigger_manager = RetainingTriggerManager(
+            feedback_db=feedback_db,
+            predictions_db=predictions_db,
+            drift_detector=drift_detector
+        )
+        
+        # Check conditions
+        try:
+            evaluation = trigger_manager.check_retraining_conditions()
+        except Exception as e:
+            st.error(f"Error checking retraining conditions: {e}")
+            st.info("This is expected during initial setup. Submit feedback to populate the system.")
+            return
+        
+        # Display status
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            status = "🟢 READY" if evaluation['should_retrain'] else "🔵 MONITORING"
+            st.metric("Retraining Status", status)
+        
+        with col2:
+            metrics = evaluation['metrics']
+            st.metric(
+                "Feedback Count",
+                f"{metrics['feedback_count']}/50",
+                f"{metrics['feedback_count']}%"
+            )
+        
+        with col3:
+            st.metric(
+                "Drift Score",
+                f"{metrics['drift_score']:.2f}",
+                f"Threshold: 0.30"
+            )
+        
+        # Display detailed conditions
+        st.markdown("**Evaluation Details**")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        details = evaluation['trigger_details']
+        
+        with col1:
+            status_icon = "✅" if details['condition_feedback'] else "❌"
+            st.markdown(f"{status_icon} **Feedback** ({metrics['feedback_count']}/{details['feedback_threshold']})")
+        
+        with col2:
+            status_icon = "✅" if details['condition_drift'] else "❌"
+            st.markdown(f"{status_icon} **Drift** ({metrics['drift_score']:.2f}/{details['drift_threshold']})")
+        
+        with col3:
+            accuracy_drop = metrics['accuracy_drop'] * 100
+            status_icon = "✅" if details['condition_accuracy'] else "❌"
+            st.markdown(f"{status_icon} **Accuracy** ({accuracy_drop:.1f}%/{details['accuracy_drop_threshold']*100:.1f}%)")
+        
+        st.divider()
+        
+        # Show recommendations
+        if 'recommendations' in evaluation:
+            recs = evaluation['recommendations']
+            st.markdown("**Recommendations**")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.info(f"**Action**: {recs['action'].upper()}\n**Urgency**: {recs['urgency'].upper()}")
+            
+            with col2:
+                data_needed = recs['data_needed']
+                st.info(f"**More Feedback Needed**: {data_needed['more_feedback_needed']}\n**Est. Days**: {data_needed['days_to_threshold']}")
+        
+        # Display retraining history
+        st.markdown("**Recent Retraining History**")
+        history = feedback_db.get_retraining_history(limit=5)
+        
+        if not history.empty:
+            display_cols = ['started_at', 'trigger_reason', 'feedback_count', 'status']
+            display_df = history[display_cols].copy()
+            display_df['started_at'] = pd.to_datetime(display_df['started_at']).dt.strftime('%Y-%m-%d %H:%M')
+            display_df = display_df.rename(columns={'started_at': 'Date', 'trigger_reason': 'Reason'})
+            st.dataframe(display_df, use_container_width=True, hide_index=True)
+        else:
+            st.info("No retraining events yet.")
+        
+        feedback_db.close()
+        predictions_db.close()
+    
+    except Exception as e:
+        st.error(f"⚠️ Error in retraining status section: {e}")
+        st.info("This is expected during initial setup. The system will work once you submit feedback.")
+
+
 def create_data_table(df_predicted):
     """Display detailed prediction data"""
     st.subheader("📋 Detailed Predictions")
@@ -419,10 +663,12 @@ def main():
     st.divider()
     
     # Create main tabs for different views
-    tab_forecast, tab_analysis, tab_monitoring = st.tabs([
+    tab_forecast, tab_analysis, tab_monitoring, tab_feedback, tab_retraining = st.tabs([
         "📊 Forecast & Predictions",
         "📈 Analysis",
-        "🔍 Monitoring"
+        "🔍 Monitoring",
+        "📝 Feedback",
+        "🔄 Retraining"
     ])
     
     # Load data and get predictions
@@ -497,6 +743,14 @@ def main():
         else:
             st.warning("⚠️ Monitoring dashboard is not available. Install required dependencies.")
             st.info("To enable monitoring, ensure the monitoring module is properly configured.")
+    
+    # TAB 4: Feedback Collection
+    with tab_feedback:
+        create_feedback_section()
+    
+    # TAB 5: Retraining Status
+    with tab_retraining:
+        create_retraining_status_section()
     
     # Footer
     st.divider()
