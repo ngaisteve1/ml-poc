@@ -522,19 +522,29 @@ def create_retraining_status_section():
     st.subheader("🔄 Retraining Status")
     
     if not FEEDBACK_AVAILABLE:
-        st.warning("⚠️ Retraining module not available")
+        st.warning("⚠️ Retraining module not available - feedback system not loaded")
         return
     
     try:
         # Initialize databases
-        feedback_db = FeedbackDB('monitoring.db')
+        try:
+            feedback_db = FeedbackDB('monitoring.db')
+        except Exception as e:
+            st.warning(f"⚠️ Could not initialize feedback database: {str(e)}")
+            st.info("💡 **First-time setup**: The feedback database will be created when you submit your first feedback entry in Tab 4.")
+            return
         
-        # Import locally to avoid startup issues
-        from monitoring.predictions_db import PredictionsDB
-        from monitoring.drift_detector import DriftDetector
-        
-        predictions_db = PredictionsDB('monitoring.db')
-        drift_detector = DriftDetector()
+        try:
+            # Import locally to avoid startup issues
+            from monitoring.predictions_db import PredictionsDB
+            from monitoring.drift_detector import DriftDetector
+            
+            predictions_db = PredictionsDB('monitoring.db')
+            drift_detector = DriftDetector()
+        except Exception as e:
+            st.warning(f"⚠️ Could not initialize analysis components: {str(e)}")
+            feedback_db.close()
+            return
         
         # Create trigger manager
         trigger_manager = RetainingTriggerManager(
@@ -547,8 +557,10 @@ def create_retraining_status_section():
         try:
             evaluation = trigger_manager.check_retraining_conditions()
         except Exception as e:
-            st.error(f"Error checking retraining conditions: {e}")
-            st.info("This is expected during initial setup. Submit feedback to populate the system.")
+            st.warning(f"⚠️ Error checking retraining conditions: {str(e)}")
+            st.info("💡 **This is expected during initial setup**. Submit feedback in Tab 4 to populate the system and enable retraining status.")
+            feedback_db.close()
+            predictions_db.close()
             return
         
         # Display status
@@ -626,8 +638,23 @@ def create_retraining_status_section():
         predictions_db.close()
     
     except Exception as e:
-        st.error(f"⚠️ Error in retraining status section: {e}")
-        st.info("This is expected during initial setup. The system will work once you submit feedback.")
+        st.warning("⚠️ Retraining Status")
+        st.info("""
+### 💡 How to Use Retraining:
+
+**Locally** (Recommended for testing):
+1. Go to Tab 4 (Feedback) and submit predictions
+2. Retraining status will show in this tab
+3. Scheduler will auto-trigger when conditions are met
+
+**On Streamlit Cloud**:
+- Data doesn't persist between app restarts (Streamlit limitation)
+- For production: See `docs/STREAMLIT_CLOUD_RETRAINING.md` for setup
+
+**Current Status**: System initialized but no data yet.
+
+👉 **Try**: Go to Tab 4 → Submit feedback → Return here to see status
+        """)
 
 
 def create_data_table(df_predicted):
