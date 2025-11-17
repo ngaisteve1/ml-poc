@@ -14,7 +14,7 @@ azure-ai-ml==1.17.1
 azure-identity==1.15.0
 azure-storage-blob==12.19.0
 marshmallow==3.20.1
-requests==2.31.0
+requests==2.32.4
 pytz==2024.1
 applicationinsights==0.11.10
 
