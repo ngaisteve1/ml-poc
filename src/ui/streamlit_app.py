@@ -1350,8 +1350,24 @@ def main():
             st.warning("⚠️ Azure ML endpoint not available, using mock predictions")
             df_predicted = get_mock_prediction()
             metrics = get_mock_metrics()
-    except Exception as e:
+    except ValueError as e:
+        # Handle data format errors
         st.warning(f"⚠️ Could not load Azure ML predictions: {str(e)}. Using mock predictions instead.")
+        print(f"Error details: {str(e)}")
+        df_predicted = get_mock_prediction()
+        metrics = get_mock_metrics()
+    except (ConnectionError, PermissionError, TimeoutError) as e:
+        # Handle connection/auth errors
+        st.warning(f"⚠️ Could not reach Azure ML endpoint: {str(e)}. Using mock predictions instead.")
+        print(f"Error details: {str(e)}")
+        df_predicted = get_mock_prediction()
+        metrics = get_mock_metrics()
+    except Exception as e:
+        # Handle unexpected errors
+        st.warning(f"⚠️ Could not load Azure ML predictions: {str(e)}. Using mock predictions instead.")
+        print(f"Unexpected error details: {type(e).__name__}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         df_predicted = get_mock_prediction()
         metrics = get_mock_metrics()
     

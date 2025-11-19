@@ -222,25 +222,38 @@ class AzureMLEndpointClient:
             
             for pred in predictions:
                 if isinstance(pred, (list, tuple)) and len(pred) >= 2:
-                    archived_gb_values.append(pred[0])
-                    savings_gb_values.append(pred[1])
+                    archived_gb_values.append(float(pred[0]))
+                    savings_gb_values.append(float(pred[1]))
                 elif isinstance(pred, dict):
-                    archived_gb_values.append(pred.get('archived_gb', 0))
-                    savings_gb_values.append(pred.get('savings_gb', 0))
+                    archived_gb_values.append(float(pred.get('archived_gb', 0)))
+                    savings_gb_values.append(float(pred.get('savings_gb', 0)))
+            
+            if not archived_gb_values or not savings_gb_values:
+                raise ValueError(
+                    f"Failed to extract predictions. "
+                    f"Got {len(archived_gb_values)} archived_gb values and "
+                    f"{len(savings_gb_values)} savings_gb values from {len(predictions)} predictions"
+                )
             
             # Generate forecast dates starting from last historical date
             last_historical_date = pd.to_datetime(historical_df['date'].max())
+            
+            # Use actual prediction count, not forecast_days parameter
+            actual_predictions = len(archived_gb_values)
             forecast_dates = pd.date_range(
                 start=last_historical_date + timedelta(days=1),
-                periods=forecast_days,
+                periods=actual_predictions,
                 freq='D'
             )
             
-            # Build forecast DataFrame
+            # Ensure all arrays have the same length
+            min_length = min(len(forecast_dates), len(archived_gb_values), len(savings_gb_values))
+            
+            # Build forecast DataFrame with guaranteed equal-length arrays
             forecast_df = pd.DataFrame({
-                'date': forecast_dates,
-                'archived_gb': archived_gb_values[:forecast_days] if archived_gb_values else [np.nan] * forecast_days,
-                'savings_gb': savings_gb_values[:forecast_days] if savings_gb_values else [np.nan] * forecast_days,
+                'date': forecast_dates[:min_length],
+                'archived_gb': archived_gb_values[:min_length],
+                'savings_gb': savings_gb_values[:min_length],
             })
             
             # Simple metrics based on predictions
@@ -250,8 +263,8 @@ class AzureMLEndpointClient:
                 'last_updated': datetime.now().isoformat(),
                 'historical_records': len(historical_df),
                 'forecast_records': len(forecast_df),
-                'avg_archived_gb': float(np.mean(archived_gb_values)) if archived_gb_values else 0,
-                'avg_savings_gb': float(np.mean(savings_gb_values)) if savings_gb_values else 0,
+                'avg_archived_gb': float(np.mean(archived_gb_values[:min_length])) if archived_gb_values else 0,
+                'avg_savings_gb': float(np.mean(savings_gb_values[:min_length])) if savings_gb_values else 0,
             }
             
             return forecast_df, metrics
